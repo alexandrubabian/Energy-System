@@ -1,11 +1,12 @@
 package fileio;
 
+import constants.Constants;
 import contracts.DistribContract;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Distributor extends Common {
+public final class Distributor extends Common {
 
     private int contractLength;
     private int infrastructureCost;
@@ -15,15 +16,15 @@ public class Distributor extends Common {
     private int monthlyPrice;
     private int profit;
 
-    public Distributor(int id, int contractLength, int buget, int infrastructureCost,
-                       int productionCost) {
+    public Distributor(final int id, final int contractLength, final int buget,
+                       final int infrastructureCost, final int productionCost) {
         super(id, buget);
         this.contractLength = contractLength;
         this.infrastructureCost = infrastructureCost;
         this.productionCost = productionCost;
         this.contracts = new ArrayList<>();
         this.monthlyPrice = 0;
-        this.profit = (int) Math.round(Math.floor(0.2 * productionCost));
+        this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
         this.inDebt = new ArrayList<>();
     }
 
@@ -55,27 +56,26 @@ public class Distributor extends Common {
         return productionCost;
     }
 
-    public void setInfrastructureCost(int infrastructureCost) {
+    public void setInfrastructureCost(final int infrastructureCost) {
         this.infrastructureCost = infrastructureCost;
     }
-
-    public void setProductionCost(int productionCost) {
+    /**
+     * Change the production cost with the one from parameter
+     *
+     * @param productionCost new productionCost
+     */
+    public void setProductionCost(final int productionCost) {
         this.productionCost = productionCost;
-        this.profit = (int) Math.round(Math.floor(0.2 * productionCost));
+        this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
     }
 
-    public void setMonthlyPrice(int monthlyPrice) {
+    public void setMonthlyPrice(final int monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
     }
-
+    /**
+     * Delete all the contracts from the distributor
+     */
     public void eraseAllContracts() {
         this.contracts = new ArrayList<>();
-    }
-
-    @Override
-    public String toString() {
-        return "Distributor{" +
-                "contracts=" + contracts +
-                '}';
     }
 }

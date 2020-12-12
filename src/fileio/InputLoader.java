@@ -1,6 +1,5 @@
 package fileio;
 
-import com.fasterxml.jackson.core.JsonParser;
 import constants.Constants;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputLoader {
+public final class InputLoader {
 
     private final String inputFile;
 
@@ -23,7 +22,10 @@ public class InputLoader {
     public String getInputFile() {
         return inputFile;
     }
-
+    /**
+     * Read the data from the JSON file and parse it into object input
+     * @return the input of class Input
+     */
     public Input readData() {
         JSONParser jsonParser = new JSONParser();
         List<Consumer> consumers = new ArrayList<>();

@@ -1,9 +1,21 @@
 package fileio;
 
-public class CommonFactory {
-    public Common getCommon(String commonType, int id, int buget, int monthlyIncome,
-                            int contractLength, int infrastructureCost,
-                            int productionCost) {
+public final class CommonFactory {
+    /**
+     * Return the object from abstract class Common
+     *
+     * @param id
+     * @param buget
+     * @param commonType
+     * @param contractLength
+     * @param infrastructureCost
+     * @param monthlyIncome
+     * @param productionCost
+     * @return new Consumer or new Distributor
+     */
+    public Common getCommon(final String commonType, final int id, final int buget,
+                            final int monthlyIncome, final int contractLength,
+                            final int infrastructureCost, final int productionCost) {
         //to extend in part 2 of the homework when there will be 2 types of consumers;
         if (commonType.equals("consumer")) {
             return new Consumer(id, buget, monthlyIncome);

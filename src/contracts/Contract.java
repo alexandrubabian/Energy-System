@@ -9,36 +9,43 @@ public abstract class Contract {
     public Contract() {
     }
 
-    public Contract(int price, int remainedContractMonths) {
+    public Contract(final int price, final int remainedContractMonths) {
         this.price = price;
         this.remainedContractMonths = remainedContractMonths;
     }
-
+    /**
+     * Getter for price
+     * @return the price
+     */
     public int getPrice() {
         return price;
     }
-
+    /**
+     * Getter for remainedContractMonths
+     * @return the remainedContractMonths
+     */
     public int getRemainedContractMonths() {
         return remainedContractMonths;
     }
-
-    public void setPrice(int price) {
+    /**
+     * Setter for price
+     *
+     * @param price of the contract
+     */
+    public void setPrice(final int price) {
         this.price = price;
     }
-
-    public void setRemainedContractMonths(int remainedContractMonths) {
+    /**
+     * Setter for remainedContractMonths
+     * @param remainedContractMonths of the contract
+     */
+    public void setRemainedContractMonths(final int remainedContractMonths) {
         this.remainedContractMonths = remainedContractMonths;
     }
-
+    /**
+     * Decrease with 1 the number of months
+     */
     public void decreaseMonths() {
         this.remainedContractMonths--;
-    }
-
-    @Override
-    public String toString() {
-        return "Contract{" +
-                "price=" + price +
-                ", remainedContractMonths=" + remainedContractMonths +
-                '}';
     }
 }

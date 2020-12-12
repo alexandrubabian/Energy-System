@@ -8,7 +8,11 @@ public final class Utils {
     }
 
     /**
-     * finding the specific distributor by his id
+     * Find the distributor with the id from paramter
+     *
+     * @param id of distributor to look for
+     * @param distributors list of distributors
+     * @return the distributor
      */
     public static Distributor findDistributor(final int id,
                                               final List<Distributor> distributors) {

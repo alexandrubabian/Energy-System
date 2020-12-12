@@ -2,15 +2,15 @@ package fileio;
 
 import java.util.List;
 
-public class Input {
+public final class Input {
     private final List<Consumer> consumers;
 
     private final List<Distributor> distributors;
 
     private final List<MonthlyUpdate> monthlyUpdates;
 
-    public Input(List<Consumer> consumers, List<Distributor> distributors,
-                 List<MonthlyUpdate> monthlyUpdates) {
+    public Input(final List<Consumer> consumers, final List<Distributor> distributors,
+                 final List<MonthlyUpdate> monthlyUpdates) {
         this.consumers = consumers;
         this.distributors = distributors;
         this.monthlyUpdates = monthlyUpdates;
@@ -26,14 +26,5 @@ public class Input {
 
     public List<MonthlyUpdate> getMonthlyUpdates() {
         return monthlyUpdates;
-    }
-
-    @Override
-    public String toString() {
-        return "Input{" +
-                "consumers=" + consumers +
-                ", distributors=" + distributors +
-                ", monthlyUpdates=" + monthlyUpdates +
-                '}';
     }
 }

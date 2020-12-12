@@ -2,14 +2,14 @@ package contracts;
 
 import fileio.Consumer;
 
-public class DistribContract extends Contract {
+public final class DistribContract extends Contract {
 
     private final int consumerId;
 
     private Consumer consumer;
 
-    public DistribContract(int consumerId, int price, int remainedContractMonths,
-                           Consumer consumer) {
+    public DistribContract(final int consumerId, final int price, final int remainedContractMonths,
+                           final Consumer consumer) {
         super(price, remainedContractMonths);
         this.consumerId = consumerId;
         this.consumer = consumer;
@@ -22,6 +22,4 @@ public class DistribContract extends Contract {
     public int getConsumerId() {
         return consumerId;
     }
-
-
 }

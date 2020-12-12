@@ -2,13 +2,13 @@ package contracts;
 
 import fileio.Distributor;
 
-public class Debt {
+public final class Debt {
 
     private int moneyToPay;
 
     private Distributor distributorToPay;
 
-    public Debt(int moneyToPay, Distributor distributorToPay) {
+    public Debt(final int moneyToPay, final Distributor distributorToPay) {
         this.moneyToPay = moneyToPay;
         this.distributorToPay = distributorToPay;
     }

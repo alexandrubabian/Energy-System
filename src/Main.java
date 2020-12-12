@@ -1,13 +1,18 @@
 import actions.Action;
-import fileio.Consumer;
 import fileio.Distributor;
 import fileio.Input;
 import fileio.InputLoader;
 import write.Writer;
 
-public class Main {
+public final class Main {
 
-    public static void main(String[] args) throws Exception {
+    private Main() {
+
+    }
+    /**
+     * Main method
+     */
+    public static void main(final String[] args) throws Exception {
         String inputFile = args[0];
         String outputFile = args[1];
         InputLoader inputLoader = new InputLoader(inputFile);

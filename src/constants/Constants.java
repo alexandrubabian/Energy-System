@@ -20,5 +20,6 @@ public final class Constants {
     public static final String COSTSCHANGES = "costsChanges";
     public static final String INFRASTRUCTURECOST = "infrastructureCost";
     public static final String PRODUCTIONCOST = "productionCost";
-
+    public static final double PROCENTAGEPROFIT = 0.2;
+    public static final double PROCENTAGEDEBT = 1.2;
 }

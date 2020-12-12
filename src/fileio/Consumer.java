@@ -3,13 +3,13 @@ package fileio;
 import contracts.ConsumerContract;
 import contracts.Debt;
 
-public class Consumer extends Common {
+public final class Consumer extends Common {
 
     private int monthlyIncome;
     private ConsumerContract contract;
     private Debt debt;
 
-    public Consumer(int id, int buget, int monthlyIncome) {
+    public Consumer(final int id, final int buget, final int monthlyIncome) {
         super(id, buget);
         this.monthlyIncome = monthlyIncome;
         this.contract = null;
@@ -28,14 +28,17 @@ public class Consumer extends Common {
         return debt;
     }
 
-    public void setContract(ConsumerContract contract) {
+    public void setContract(final ConsumerContract contract) {
         this.contract = contract;
     }
 
-    public void setDebt(Debt debt) {
+    public void setDebt(final Debt debt) {
         this.debt = debt;
     }
 
+    /**
+     * Increase the budget with the monthlyIncome
+     */
     public void getSalary() {
         this.payDay(this.monthlyIncome);
     }

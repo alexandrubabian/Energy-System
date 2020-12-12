@@ -1,6 +1,6 @@
 package fileio;
 
-public class CostChange {
+public final class CostChange {
 
     private final int id;
 
@@ -8,7 +8,7 @@ public class CostChange {
 
     private final int productionCost;
 
-    public CostChange(int id, int infrastructureCost, int productionCost) {
+    public CostChange(final int id, final int infrastructureCost, final int productionCost) {
         this.id = id;
         this.infrastructureCost = infrastructureCost;
         this.productionCost = productionCost;

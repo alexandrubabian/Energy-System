@@ -1,8 +1,8 @@
 package actions;
 
+import constants.Constants;
 import constants.Utils;
 import contracts.ConsumerContract;
-import contracts.Contract;
 import contracts.ContractFactory;
 import contracts.Debt;
 import contracts.DistribContract;
@@ -11,9 +11,7 @@ import fileio.CostChange;
 import fileio.Distributor;
 import fileio.Input;
 
-import java.util.ArrayList;
-
-public class Action {
+public final class Action {
     private Input input;
 
     public Action(final Input input) {
@@ -23,14 +21,21 @@ public class Action {
     public Input getInput() {
         return input;
     }
-
-    public void introduceNewMonthCustomers(int month) {
+    /**
+     * Introduce the new consumers
+     *
+     * @param month of the changes
+     */
+    public void introduceNewMonthCustomers(final int month) {
         for (Consumer iterator : input.getMonthlyUpdates().get(month).getNewConsumers()) {
             input.getConsumers().add(iterator);
         }
     }
-
-    public void introduceMonthCostChanges(int month) {
+    /**
+     * In each month there it might be changes to be done to the distributors
+     * @param month of the changes
+     */
+    public void introduceMonthCostChanges(final int month) {
         Distributor distributor;
         for (CostChange iterator : input.getMonthlyUpdates().get(month).getCostChanges()) {
             distributor = Utils.findDistributor(iterator.getId(), input.getDistributors());
@@ -73,7 +78,7 @@ public class Action {
      * In each month there is a bestDistributor, which will be chosen by all the free
      * customers
      */
-    public void chooseContract(Distributor bestDistributor) {
+    public void chooseContract(final Distributor bestDistributor) {
         ContractFactory contractFactory = ContractFactory.getInstance();
         for (Consumer iterator : input.getConsumers()) {
             if (!iterator.getBankrupt() && (iterator.getContract() == null
@@ -92,19 +97,16 @@ public class Action {
     }
 
     /**
-     * la fiecare inceput de luna trebuie eliminati din lista unui distribuitor
-     * contractele care au ajuns la final adica cele care au 0 luni ramase
+     * It removes the contracts that have 0 months left
      */
     public void cleanUpExpiredContracts() {
-        //TODO vezi daca e vreun caz special de afisare atunci cand unul apare la datorii
         for (Distributor iterator : input.getDistributors()) {
             iterator.getContracts().removeIf(x -> x.getRemainedContractMonths() == 0);
         }
     }
 
     /**
-     * ai luat decizia ca indiferent daca un consumator deja a iesit din joc
-     * tot sa ii cresti venitul lunar
+     * Each consumer get his monthly salary if he is not bankrupt
      */
     public void receiveSalary() {
         for (Consumer iterator : input.getConsumers()) {
@@ -113,13 +115,11 @@ public class Action {
             }
         }
     }
-
     /**
-     * Fiecare consumator isi plateste taxa lunara. Daca are si o datorie, se cauta daca le poate
-     * plati pe amandoua, daca nu poate, va intra in faliment. Daca nu isi poate plati factura
-     * curenta si are si datorie, va intra in faliment. Daca nu isi poate plati fact curenta
-     * dar nu are nicio datorie va intra in datorii. De fiecare data cand un consumator intra
-     * in faliment il sterg din lista de consumatori datori ai distribuitorului la care era datoria
+     * Each consumer pays his monthly tax, it he has a debt we look if it can pay both of them
+     * if not, we declare him bankrupt. If he can pay the monthly tax, we populate the field
+     * debt of the consumer. If the consumer won't be able to pay the taxes both months, the
+     * distributor won't get the money
      */
     public void pay() {
         Distributor distributor;
@@ -127,14 +127,14 @@ public class Action {
             if (!iterator.getBankrupt()) {
                 distributor = iterator.getContract().getDistributor();
                 if (iterator.getBuget() >= iterator.getContract().getPrice()) {
-                    //nu are datorie si o poate plati
+                    //no debt and he can also pay it
                     if (iterator.getDebt() == null) {
                         iterator.pay(iterator.getContract().getPrice());
                         distributor.setBuget(
                                 iterator.getContract().getPrice() + distributor.getBuget());
 
                     } else {
-                        //cazul in care are datorie si de asemenea si-o poate plati
+                        //if he has debt and he can pay the debt and the actual price
                         if (iterator.getBuget() >= (iterator.getContract().getPrice()
                                 + iterator.getDebt().getMoneyToPay())) {
 
@@ -146,12 +146,12 @@ public class Action {
                             iterator.getDebt().getDistributorToPay().setBuget(
                                     iterator.getDebt().getMoneyToPay()
                                             + iterator.getDebt().getDistributorToPay().getBuget());
-                            //a scapat de datorii
+                            //no more in debt
                             iterator.getDebt().getDistributorToPay().getInDebt().remove(iterator);
                             iterator.setDebt(null);
 
                         } else {
-                            //nu poate plati si datoria si factura curenta
+                            //he can't pay the second bill also
                             iterator.setBankrupt(true);
                             iterator.getContract().getDistributor().getContracts()
                                     .removeIf(x -> x.getConsumer().equals(iterator));
@@ -160,14 +160,14 @@ public class Action {
                     }
 
                 } else {
-                    //nu-si poate plati factura curenta
-
-                    //daca nu are datorii
+                    //The consumer can't pay the bill
+                    //case1: no debt
                     if (iterator.getDebt() == null) {
-                        iterator.setDebt(new Debt((int) (1.2 * iterator.getContract().getPrice()),
-                                distributor));
+                        iterator.setDebt(new Debt((int) (Constants.PROCENTAGEDEBT
+                                * iterator.getContract().getPrice()), distributor));
                         distributor.getInDebt().add(iterator);
                     } else {
+                        //case2: he already has a bill to pay
                         iterator.setBankrupt(true);
                         iterator.getContract().getDistributor().getContracts()
                                 .removeIf(x -> x.getConsumer().equals(iterator));
@@ -177,7 +177,9 @@ public class Action {
             }
         }
     }
-
+    /**
+     * Find the distributor with the budget <0 and it makes it bankrupt
+     */
     public void distributorBankrupt() {
         for (Distributor iterator : input.getDistributors()) {
             if (!iterator.getBankrupt()) {
@@ -190,19 +192,23 @@ public class Action {
             }
         }
     }
-
-    public void deleteContracts(Distributor distributor) {
+    /**
+     * For the distributor from the parameter, the function will delete all hist cotracts
+     *
+     * @param distributor to be deleted contracts
+     */
+    public void deleteContracts(final Distributor distributor) {
 
         for (Consumer iterator : distributor.getInDebt()) {
             iterator.setDebt(null);
         }
-        //sterg toate contractele consumatorilor care aveau contract la distribuitorul ce a intrat
-        //in faliment
         for (DistribContract iterator : distributor.getContracts()) {
             iterator.getConsumer().setContract(null);
         }
     }
-
+    /**
+     * Each distributor that is not bankrupt will have to pay his taxes
+     */
     public void distributorPay() {
         int payment;
         for (Distributor iterator : input.getDistributors()) {
@@ -214,7 +220,9 @@ public class Action {
         }
     }
 
-    //mai trece o luna peste narnia
+    /**
+     * Decrease with 1 the number of months of each contract
+     */
     public void decreaseConstractMonths() {
         for (Distributor iterator : input.getDistributors()) {
             for (DistribContract contractIterator : iterator.getContracts()) {
