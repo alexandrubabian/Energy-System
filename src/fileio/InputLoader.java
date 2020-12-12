@@ -37,68 +37,90 @@ public class InputLoader {
             JSONArray jsonDistributors = (JSONArray) initialData.get(Constants.DISTRIBUTORS);
             JSONArray jsonMonthlyUpdates = (JSONArray) jsonObject.get(Constants.MONTHLYUPDATES);
 
-        if (jsonMonthlyUpdates != null) {
-            for (Object jsonUpdate : jsonMonthlyUpdates) {
-                List<Consumer> newConsumers = new ArrayList<>();
-                List<CostChange> costChanges = new ArrayList<>();
-                JSONArray jsonNewConsumers = (JSONArray) ((JSONObject)jsonUpdate).get(Constants.NEWCONSUMERS);
-                JSONArray jsonCostChanges = (JSONArray) ((JSONObject)jsonUpdate).get(Constants.COSTSCHANGES);
+            if (jsonMonthlyUpdates != null) {
+                for (Object jsonUpdate : jsonMonthlyUpdates) {
+                    List<Consumer> newConsumers = new ArrayList<>();
+                    List<CostChange> costChanges = new ArrayList<>();
+                    JSONArray jsonNewConsumers =
+                            (JSONArray) ((JSONObject) jsonUpdate).get(Constants.NEWCONSUMERS);
+                    JSONArray jsonCostChanges =
+                            (JSONArray) ((JSONObject) jsonUpdate).get(Constants.COSTSCHANGES);
 
-                for (Object jsonIteratorNewConsumers : jsonNewConsumers) {
-                    newConsumers.add(new Consumer(
-                            Integer.parseInt(((JSONObject) jsonIteratorNewConsumers).get(Constants.ID).toString()),
-                            Integer.parseInt(((JSONObject) jsonIteratorNewConsumers).get(Constants.INITIALBUDGET).toString()),
-                            Integer.parseInt(((JSONObject) jsonIteratorNewConsumers).get(Constants.MONTHLYINCOME).toString())
-                    ));
-                }
-
-                for (Object jsonIteratorCostChanges : jsonCostChanges) {
-                    costChanges.add(new CostChange(
-                            Integer.parseInt(((JSONObject) jsonIteratorCostChanges).get(Constants.ID).toString()),
-                            Integer.parseInt(((JSONObject) jsonIteratorCostChanges).get(Constants.INFRASTRUCTURECOST).toString()),
-                            Integer.parseInt(((JSONObject) jsonIteratorCostChanges).get(Constants.PRODUCTIONCOST).toString())
-                    ));
-                }
-
-                monthlyUpdates.add(new MonthlyUpdate(newConsumers, costChanges));
-            }
-        }
-
-        if (jsonConsumers != null) {
-            for (Object jsonConsumer : jsonConsumers) {
-                consumers.add((Consumer) commonFactory.getCommon("consumer",
-                        Integer.parseInt(((JSONObject) jsonConsumer).get(Constants.ID).toString()),
-                        Integer.parseInt(((JSONObject) jsonConsumer).get(Constants.INITIALBUDGET).toString()),
-                        Integer.parseInt(((JSONObject) jsonConsumer).get(Constants.MONTHLYINCOME).toString()),
-                        0, 0, 0)
-                );
-            }
-        }
-
-        if(jsonDistributors != null) {
-            for(Object jsonDistributor : jsonDistributors) {
-                distributors.add((Distributor) commonFactory.getCommon("distributor",
-                        Integer.parseInt(((JSONObject) jsonDistributor).get(Constants.ID).toString()),
-                        Integer.parseInt(((JSONObject) jsonDistributor).get(Constants.INITIALBUDGET).toString()),
-                        0,
-                        Integer.parseInt(((JSONObject) jsonDistributor).get(Constants.CONTRACTLENGTH).toString()),
-                        Integer.parseInt(((JSONObject) jsonDistributor).get(Constants.INITIALINFRACTURECOST).toString()),
-                        Integer.parseInt(((JSONObject) jsonDistributor).get(Constants.INITIALPRODUCTIONCOST).toString())
+                    for (Object jsonIteratorNewConsumers : jsonNewConsumers) {
+                        newConsumers.add(new Consumer(
+                                Integer.parseInt(
+                                        ((JSONObject) jsonIteratorNewConsumers).get(Constants.ID)
+                                                .toString()),
+                                Integer.parseInt(((JSONObject) jsonIteratorNewConsumers)
+                                        .get(Constants.INITIALBUDGET).toString()),
+                                Integer.parseInt(((JSONObject) jsonIteratorNewConsumers)
+                                        .get(Constants.MONTHLYINCOME).toString())
                         ));
+                    }
+
+                    for (Object jsonIteratorCostChanges : jsonCostChanges) {
+                        costChanges.add(new CostChange(
+                                Integer.parseInt(
+                                        ((JSONObject) jsonIteratorCostChanges).get(Constants.ID)
+                                                .toString()),
+                                Integer.parseInt(((JSONObject) jsonIteratorCostChanges)
+                                        .get(Constants.INFRASTRUCTURECOST).toString()),
+                                Integer.parseInt(((JSONObject) jsonIteratorCostChanges)
+                                        .get(Constants.PRODUCTIONCOST).toString())
+                        ));
+                    }
+
+                    monthlyUpdates.add(new MonthlyUpdate(newConsumers, costChanges));
+                }
             }
-        }
 
-        if(jsonConsumers == null) {
-            consumers = null;
-        }
+            if (jsonConsumers != null) {
+                for (Object jsonConsumer : jsonConsumers) {
+                    consumers.add((Consumer) commonFactory.getCommon("consumer",
+                            Integer.parseInt(
+                                    ((JSONObject) jsonConsumer).get(Constants.ID).toString()),
+                            Integer.parseInt(
+                                    ((JSONObject) jsonConsumer).get(Constants.INITIALBUDGET)
+                                            .toString()),
+                            Integer.parseInt(
+                                    ((JSONObject) jsonConsumer).get(Constants.MONTHLYINCOME)
+                                            .toString()),
+                            0, 0, 0)
+                    );
+                }
+            }
 
-        if(jsonDistributors == null) {
-            distributors = null;
-        }
+            if (jsonDistributors != null) {
+                for (Object jsonDistributor : jsonDistributors) {
+                    distributors.add((Distributor) commonFactory.getCommon("distributor",
+                            Integer.parseInt(
+                                    ((JSONObject) jsonDistributor).get(Constants.ID).toString()),
+                            Integer.parseInt(
+                                    ((JSONObject) jsonDistributor).get(Constants.INITIALBUDGET)
+                                            .toString()),
+                            0,
+                            Integer.parseInt(
+                                    ((JSONObject) jsonDistributor).get(Constants.CONTRACTLENGTH)
+                                            .toString()),
+                            Integer.parseInt(((JSONObject) jsonDistributor)
+                                    .get(Constants.INITIALINFRACTURECOST).toString()),
+                            Integer.parseInt(((JSONObject) jsonDistributor)
+                                    .get(Constants.INITIALPRODUCTIONCOST).toString())
+                    ));
+                }
+            }
 
-        if(jsonMonthlyUpdates == null) {
-            monthlyUpdates = null;
-        }
+            if (jsonConsumers == null) {
+                consumers = null;
+            }
+
+            if (jsonDistributors == null) {
+                distributors = null;
+            }
+
+            if (jsonMonthlyUpdates == null) {
+                monthlyUpdates = null;
+            }
 
         } catch (ParseException | IOException e) {
             e.printStackTrace();

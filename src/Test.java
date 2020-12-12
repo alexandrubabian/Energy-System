@@ -107,10 +107,12 @@ public final class Test {
     private static int score = 0;
     private static int totalScore = 0;
 
-    private Test() { }
+    private Test() {
+    }
 
     /**
      * Method to be called for testing the homework
+     *
      * @param argv String[]
      */
     public static void main(final String[] argv) {
@@ -136,7 +138,7 @@ public final class Test {
         totalScore = config.getCheckstyleScore();
         int manualScore = config.getReadmeScore() + config.getHomeworkDesignScore();
 
-        for (final File testFile: Objects.requireNonNull(TEST_INPUTS_FILE.listFiles())) {
+        for (final File testFile : Objects.requireNonNull(TEST_INPUTS_FILE.listFiles())) {
             String testFileName = testFile.getName();
 
             preTestCleanUp();
@@ -248,7 +250,7 @@ public final class Test {
             final Config config,
             final String testFileName
     ) {
-        for (TestType testType: config.getTestTypes()) {
+        for (TestType testType : config.getTestTypes()) {
             if (testFileName.contains(testType.getType())) {
                 return testType.getScore();
             }
