@@ -1,6 +1,22 @@
 package fileio;
 
 public final class CommonFactory {
+
+    private static CommonFactory instance;
+
+    private CommonFactory() {
+    }
+    /**
+     * Singleton method
+     * @return the instance of the class
+     */
+    public static CommonFactory getInstance() {
+        if (instance == null) {
+            instance = new CommonFactory();
+        }
+        return instance;
+    }
+
     /**
      * Return the object from abstract class Common
      *

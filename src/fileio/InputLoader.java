@@ -31,7 +31,6 @@ public final class InputLoader {
         List<Consumer> consumers = new ArrayList<>();
         List<Distributor> distributors = new ArrayList<>();
         List<MonthlyUpdate> monthlyUpdates = new ArrayList<>();
-        CommonFactory commonFactory = new CommonFactory();
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(this.inputFile));
             JSONObject initialData = (JSONObject) jsonObject.get(Constants.INITIALDATA);
@@ -78,7 +77,8 @@ public final class InputLoader {
 
             if (jsonConsumers != null) {
                 for (Object jsonConsumer : jsonConsumers) {
-                    consumers.add((Consumer) commonFactory.getCommon("consumer",
+                    consumers.add((Consumer) CommonFactory.getInstance().getCommon(
+                            "consumer",
                             Integer.parseInt(
                                     ((JSONObject) jsonConsumer).get(Constants.ID).toString()),
                             Integer.parseInt(
@@ -94,7 +94,8 @@ public final class InputLoader {
 
             if (jsonDistributors != null) {
                 for (Object jsonDistributor : jsonDistributors) {
-                    distributors.add((Distributor) commonFactory.getCommon("distributor",
+                    distributors.add((Distributor) CommonFactory.getInstance().getCommon(
+                            "distributor",
                             Integer.parseInt(
                                     ((JSONObject) jsonDistributor).get(Constants.ID).toString()),
                             Integer.parseInt(
