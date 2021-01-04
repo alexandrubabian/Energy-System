@@ -7,9 +7,13 @@ import contracts.ContractFactory;
 import contracts.Debt;
 import contracts.DistribContract;
 import fileio.Consumer;
-import fileio.CostChange;
+import fileio.DistributorChange;
 import fileio.Distributor;
 import fileio.Input;
+import fileio.Producer;
+import fileio.ProducerChange;
+
+import java.util.ArrayList;
 
 public final class Action {
     private Input input;
@@ -35,13 +39,28 @@ public final class Action {
      * In each month there it might be changes to be done to the distributors
      * @param month of the changes
      */
-    public void introduceMonthCostChanges(final int month) {
+    public void introduceMonthDistributorChanges(final int month) {
         Distributor distributor;
-        for (CostChange iterator : input.getMonthlyUpdates().get(month).getCostChanges()) {
-            distributor = Utils.findDistributor(iterator.getId(), input.getDistributors());
-            distributor.setInfrastructureCost(iterator.getInfrastructureCost());
-            distributor.setProductionCost(iterator.getProductionCost());
+        for (DistributorChange iterator : input.getMonthlyUpdates().get(month).getDistributorChanges()) {
+            distributor = input.getDistributors().get(iterator.getId());
+            //TODO check if it is working good
+            //distributor = Utils.findDistributor(iterator.getId(), input.getDistributors());
+            if(distributor != null) {
+                distributor.setInfrastructureCost(iterator.getInfrastructureCost());
+            }
         }
+    }
+
+    public void introduceMonthProducerChanges(final int month) {
+        Producer producer;
+        for (ProducerChange iterator : input.getMonthlyUpdates().get(month).getProducerChanges()) {
+            producer = input.getProducers().get(iterator.getId());
+            //TODO aici ar trb sa adaugi partea de observer
+            if(producer != null) {
+                producer.setEnergyPerDistributor(iterator.getEnergyPerDistributor());
+            }
+        }
+
     }
 
     /**
@@ -56,6 +75,7 @@ public final class Action {
         Distributor bestDistributor = null;
         for (Distributor iterator : input.getDistributors()) {
             if (!iterator.getBankrupt()) {
+                iterator.setProductionCost();
                 if (iterator.getContracts().size() == 0) {
                     price = iterator.getInfrastructureCost() + iterator.getProductionCost()
                             + iterator.getProfit();
@@ -64,7 +84,7 @@ public final class Action {
                             iterator.getInfrastructureCost() / iterator.getContracts().size()))
                             + iterator.getProductionCost() + iterator.getProfit());
                 }
-                iterator.setMonthlyPrice(price);
+                iterator.setContractCost(price);
                 if (price < bestPrice) {
                     bestPrice = price;
                     bestDistributor = iterator;
@@ -85,12 +105,12 @@ public final class Action {
                     || iterator.getContract().getRemainedContractMonths() == 0)) {
                 iterator.setContract((ConsumerContract) contractFactory.createContract(
                         "consumer",
-                        bestDistributor.getMonthlyPrice(), bestDistributor.getContractLength(),
+                        bestDistributor.getContractCost(), bestDistributor.getContractLength(),
                         bestDistributor.getId(), bestDistributor));
 
 
                 bestDistributor.getContracts().add((DistribContract) contractFactory.createContract(
-                        "distributor", bestDistributor.getMonthlyPrice(),
+                        "distributor", bestDistributor.getContractCost(),
                         bestDistributor.getContractLength(), iterator.getId(), iterator));
             }
         }
@@ -228,6 +248,17 @@ public final class Action {
             for (DistribContract contractIterator : iterator.getContracts()) {
                 contractIterator.decreaseMonths();
                 contractIterator.getConsumer().getContract().decreaseMonths();
+            }
+        }
+    }
+
+    public void chooseFirstProducers() {
+        for (Distributor iterator : input.getDistributors()) {
+            ArrayList<Producer> futureProducers = iterator.getStrategy().doOperation((
+                    ArrayList<Producer>) Input.getProducers(), iterator.getEnergyNeededKW());
+
+            for(Producer producer : futureProducers) {
+                iterator.addSubject(producer);
             }
         }
     }

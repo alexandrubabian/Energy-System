@@ -4,6 +4,7 @@ import contracts.DistribContract;
 import fileio.Consumer;
 import fileio.Distributor;
 import fileio.Input;
+import fileio.Producer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,12 @@ public final class ToWrite {
 
     private List<ToWriteDistributor> distributors;
 
+    private List<ToWriteProducer> energyProducers;
+
     public ToWrite() {
         this.consumers = new ArrayList<>();
         this.distributors = new ArrayList<>();
+        this.energyProducers = new ArrayList<>();
     }
 
     public List<ToWriteConsumer> getConsumers() {
@@ -25,6 +29,10 @@ public final class ToWrite {
 
     public List<ToWriteDistributor> getDistributors() {
         return distributors;
+    }
+
+    public List<ToWriteProducer> getEnergyProducers() {
+        return energyProducers;
     }
 
     /**
@@ -40,13 +48,21 @@ public final class ToWrite {
         }
         ToWriteContracts toWriteContracts;
         for (Distributor iterator : input.getDistributors()) {
-            distributors.add(new ToWriteDistributor(iterator.getId(), iterator.getBuget(),
-                    iterator.getBankrupt()));
+            distributors.add(new ToWriteDistributor(iterator.getId(), iterator.getEnergyNeededKW(),
+                    iterator.getContractCost(), iterator.getBuget(),
+                    iterator.getProducerStrategy().getLabel(), iterator.getBankrupt()));
             for (DistribContract contractIterator : iterator.getContracts()) {
                 toWriteContracts = new ToWriteContracts(contractIterator.getConsumerId(),
                         contractIterator.getPrice(), contractIterator.getRemainedContractMonths());
                 distributors.get(distributors.size() - 1).getContracts().add(toWriteContracts);
             }
         }
+
+        for(Producer iterator : Input.getProducers()) {
+            energyProducers.add(new ToWriteProducer(iterator.getId(), iterator.getMaxDistributors(),
+                    iterator.getPriceKW(), iterator.getEnergyType().getLabel(),
+                    iterator.getEnergyPerDistributor(), iterator.getMonthlyStats()));
+        }
+
     }
 }

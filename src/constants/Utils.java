@@ -1,6 +1,8 @@
 package constants;
 
 import fileio.Distributor;
+import fileio.Producer;
+
 import java.util.List;
 
 public final class Utils {
@@ -17,6 +19,16 @@ public final class Utils {
     public static Distributor findDistributor(final int id,
                                               final List<Distributor> distributors) {
         for (Distributor iterator : distributors) {
+            if (iterator.getId() == id) {
+                return iterator;
+            }
+        }
+        return null;
+    }
+
+    public static Producer findProducer(final int id,
+                                           final List<Producer> producers) {
+        for (Producer iterator : producers) {
             if (iterator.getId() == id) {
                 return iterator;
             }

@@ -1,17 +1,14 @@
 package fileio;
 
-public final class CostChange {
+public final class DistributorChange {
 
     private final int id;
 
     private final int infrastructureCost;
 
-    private final int productionCost;
-
-    public CostChange(final int id, final int infrastructureCost, final int productionCost) {
+    public DistributorChange(final int id, final int infrastructureCost) {
         this.id = id;
         this.infrastructureCost = infrastructureCost;
-        this.productionCost = productionCost;
     }
 
     public int getId() {
@@ -22,7 +19,4 @@ public final class CostChange {
         return infrastructureCost;
     }
 
-    public int getProductionCost() {
-        return productionCost;
-    }
 }

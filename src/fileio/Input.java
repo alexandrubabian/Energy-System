@@ -7,12 +7,15 @@ public final class Input {
 
     private final List<Distributor> distributors;
 
+    private static List<Producer> producers;
+
     private final List<MonthlyUpdate> monthlyUpdates;
 
     public Input(final List<Consumer> consumers, final List<Distributor> distributors,
-                 final List<MonthlyUpdate> monthlyUpdates) {
+                 final List<MonthlyUpdate> monthlyUpdates, final List<Producer> producers) {
         this.consumers = consumers;
         this.distributors = distributors;
+        Input.producers = producers;
         this.monthlyUpdates = monthlyUpdates;
     }
 
@@ -26,5 +29,9 @@ public final class Input {
 
     public List<MonthlyUpdate> getMonthlyUpdates() {
         return monthlyUpdates;
+    }
+
+    public static List<Producer> getProducers() {
+        return producers;
     }
 }

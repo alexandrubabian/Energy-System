@@ -30,22 +30,27 @@ public final class InputLoader {
         JSONParser jsonParser = new JSONParser();
         List<Consumer> consumers = new ArrayList<>();
         List<Distributor> distributors = new ArrayList<>();
+        List<Producer> producers = new ArrayList<>();
         List<MonthlyUpdate> monthlyUpdates = new ArrayList<>();
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(this.inputFile));
             JSONObject initialData = (JSONObject) jsonObject.get(Constants.INITIALDATA);
             JSONArray jsonConsumers = (JSONArray) initialData.get(Constants.CONSUMERS);
             JSONArray jsonDistributors = (JSONArray) initialData.get(Constants.DISTRIBUTORS);
+            JSONArray jsonProducers = (JSONArray) initialData.get(Constants.PRODUCERS);
             JSONArray jsonMonthlyUpdates = (JSONArray) jsonObject.get(Constants.MONTHLYUPDATES);
 
             if (jsonMonthlyUpdates != null) {
                 for (Object jsonUpdate : jsonMonthlyUpdates) {
                     List<Consumer> newConsumers = new ArrayList<>();
-                    List<CostChange> costChanges = new ArrayList<>();
+                    List<DistributorChange> distributorChanges = new ArrayList<>();
+                    List<ProducerChange> producerChanges = new ArrayList<>();
                     JSONArray jsonNewConsumers =
                             (JSONArray) ((JSONObject) jsonUpdate).get(Constants.NEWCONSUMERS);
-                    JSONArray jsonCostChanges =
-                            (JSONArray) ((JSONObject) jsonUpdate).get(Constants.COSTSCHANGES);
+                    JSONArray jsonDistributorChanges =
+                            (JSONArray) ((JSONObject) jsonUpdate).get(Constants.DISTRIBUTORCHANGES);
+                    JSONArray jsonProducerChanges =
+                            (JSONArray) ((JSONObject) jsonUpdate).get(Constants.PRODUCERCHANGES);
 
                     for (Object jsonIteratorNewConsumers : jsonNewConsumers) {
                         newConsumers.add(new Consumer(
@@ -59,19 +64,29 @@ public final class InputLoader {
                         ));
                     }
 
-                    for (Object jsonIteratorCostChanges : jsonCostChanges) {
-                        costChanges.add(new CostChange(
+                    for (Object jsonIteratorDistributorChanges : jsonDistributorChanges) {
+                        distributorChanges.add(new DistributorChange(
                                 Integer.parseInt(
-                                        ((JSONObject) jsonIteratorCostChanges).get(Constants.ID)
+                                        ((JSONObject) jsonIteratorDistributorChanges).get(Constants.ID)
                                                 .toString()),
-                                Integer.parseInt(((JSONObject) jsonIteratorCostChanges)
-                                        .get(Constants.INFRASTRUCTURECOST).toString()),
-                                Integer.parseInt(((JSONObject) jsonIteratorCostChanges)
-                                        .get(Constants.PRODUCTIONCOST).toString())
+                                Integer.parseInt(((JSONObject) jsonIteratorDistributorChanges)
+                                        .get(Constants.INFRASTRUCTURECOST).toString())
                         ));
                     }
 
-                    monthlyUpdates.add(new MonthlyUpdate(newConsumers, costChanges));
+                    for (Object jsonIteratorProducerChanges : jsonProducerChanges) {
+                        producerChanges.add(new ProducerChange(
+                                Integer.parseInt(
+                                        ((JSONObject) jsonIteratorProducerChanges).get(Constants.ID)
+                                        .toString()),
+                                Integer.parseInt(
+                                        ((JSONObject) jsonIteratorProducerChanges)
+                                                .get(Constants.ENERGYPERDISTRIBUTOR).toString())
+                        ));
+                    }
+
+                    monthlyUpdates.add(new MonthlyUpdate(newConsumers, distributorChanges,
+                            producerChanges));
                 }
             }
 
@@ -87,7 +102,8 @@ public final class InputLoader {
                             Integer.parseInt(
                                     ((JSONObject) jsonConsumer).get(Constants.MONTHLYINCOME)
                                             .toString()),
-                            0, 0, 0)
+                            0, 0, 0, null,
+                            null, 0, 0.0, 0)
                     );
                 }
             }
@@ -108,9 +124,37 @@ public final class InputLoader {
                             Integer.parseInt(((JSONObject) jsonDistributor)
                                     .get(Constants.INITIALINFRACTURECOST).toString()),
                             Integer.parseInt(((JSONObject) jsonDistributor)
-                                    .get(Constants.INITIALPRODUCTIONCOST).toString())
+                                    .get(Constants.ENERGYNEEDEDKW).toString()),
+                            (String )((JSONObject) jsonDistributor).get(Constants.PRODUCERSTRATEGY),
+                            null, 0 , 0.0,
+                            0
                     ));
                 }
+            }
+
+            if(jsonProducers != null) {
+                for (Object jsonProducer : jsonProducers) {
+                    producers.add((Producer) CommonFactory.getInstance().getCommon(
+                            "producer",
+                            Integer.parseInt(
+                                    ((JSONObject) jsonProducer).get(Constants.ID).toString()),
+                            0, 0, 0, 0,
+                            0, null,
+                            (String) ((JSONObject) jsonProducer).get(Constants.ENERGYTYPE),
+                            Integer.parseInt(
+                                    ((JSONObject) jsonProducer).get(Constants.MAXDISTRIBUTORS)
+                                            .toString()),
+                            Double.parseDouble(
+                                    ((JSONObject) jsonProducer).get(Constants.PRICEKW).toString()),
+                            Integer.parseInt(
+                                    ((JSONObject) jsonProducer).get(Constants.ENERGYPERDISTRIBUTOR)
+                                    .toString())
+                    ));
+                }
+            }
+
+            if(jsonProducers == null) {
+                producers = null;
             }
 
             if (jsonConsumers == null) {
@@ -129,6 +173,6 @@ public final class InputLoader {
             e.printStackTrace();
         }
 
-        return new Input(consumers, distributors, monthlyUpdates);
+        return new Input(consumers, distributors, monthlyUpdates, producers);
     }
 }
