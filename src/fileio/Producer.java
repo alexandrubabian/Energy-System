@@ -15,7 +15,7 @@ public class Producer extends Common{
     private int maxDistributors;
     private Double priceKW;
     private int energyPerDistributor;
-    private List<Distributor> observers = new ArrayList<>();
+    private ArrayList<Distributor> observers = new ArrayList<>();
     private List<MonthlyStats> monthlyStats;
 
     public Producer(final int id, final String energyType, final int maxDistributors,
@@ -44,6 +44,7 @@ public class Producer extends Common{
         this.maxDistributors = maxDistributors;
     }
 
+
     public Double getPriceKW() {
         return priceKW;
     }
@@ -60,7 +61,7 @@ public class Producer extends Common{
         return monthlyStats;
     }
 
-    public List<Distributor> getObservers() {
+    public ArrayList<Distributor> getObservers() {
         return observers;
     }
 
@@ -68,24 +69,32 @@ public class Producer extends Common{
      * The observer method
      * @param energyPerDistributor of the producer
      */
-    public void setEnergyPerDistributor(int energyPerDistributor) {
+    public void setEnergyPerDistributor(int energyPerDistributor, ArrayList<Distributor> distributors) {
         this.energyPerDistributor = energyPerDistributor;
-        notifyAllObservers();
+        notifyAllObservers(distributors);
         //TODO delete all the distributors addicted to this producer
     }
 
-    private void notifyAllObservers() {
-        ArrayList<Distributor> copyOfObservers = new ArrayList<>(observers);
-        this.observers = new ArrayList<>();
-        Collections.sort(copyOfObservers, new Comparator<Distributor>() {
-            @Override
-            public int compare(Distributor o1, Distributor o2) {
-                return o1.getId() - o2.getId();
-            }
-        });
-        for (Distributor iterator : copyOfObservers) {
-            iterator.update();
-        }
+    private void notifyAllObservers(ArrayList<Distributor> distributors) {
+//        ArrayList<Distributor> copyOfObservers = new ArrayList<>(observers);
+////        for(Distributor iterator : copyOfObservers) {
+////            iterator.getSubjects().remove(this);
+////        }
+//        this.observers = new ArrayList<>();
+        distributors.addAll(this.getObservers());
+//        Collections.sort(copyOfObservers, new Comparator<Distributor>() {
+//            @Override
+//            public int compare(Distributor o1, Distributor o2) {
+//                return o1.getId() - o2.getId();
+//            }
+//        });
+//        for (Distributor iterator : copyOfObservers) {
+//
+//            //TODO check if true
+//            if(!iterator.getBankrupt()) {
+//                iterator.update();
+//            }
+//        }
     }
 
     public void attach(Distributor distributor) {

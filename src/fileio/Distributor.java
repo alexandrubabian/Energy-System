@@ -39,7 +39,7 @@ public final class Distributor extends Common {
         this.productionCost = 0;
         this.contractCost = 0;
         this.contracts = new ArrayList<>();
-        this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
+        this.profit = 0;
         this.inDebt = new ArrayList<>();
     }
 
@@ -119,6 +119,10 @@ public final class Distributor extends Common {
         return subjects;
     }
 
+    public void setProfit() {
+        this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
+    }
+
     public void setInfrastructureCost(final int infrastructureCost) {
         this.infrastructureCost = infrastructureCost;
     }
@@ -129,13 +133,13 @@ public final class Distributor extends Common {
      */
     public void setProductionCost() {
         //this.productionCost = productionCost;
-        int cost = 0;
-        for(Producer iterator : Input.getProducers()) {
+        Double cost = 0.0;
+        for(Producer iterator : this.subjects) {
             //TODO verifica daca trebuie Math.floor
-            cost = (int) (iterator.getEnergyPerDistributor() * iterator.getPriceKW());
+            cost += (iterator.getEnergyPerDistributor() * iterator.getPriceKW());
         }
         this.productionCost = (int) Math.round(Math.floor(cost / 10));
-        this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
+        this.setProfit();
     }
 
     public void setContractCost(final int contractCost) {
@@ -164,16 +168,12 @@ public final class Distributor extends Common {
     }
 
     public void update() {
+
+        for(Producer iterator : this.getSubjects()) {
+            iterator.getObservers().remove(this);
+        }
         ArrayList<Producer> futureProducers = strategy.doOperation((ArrayList<Producer>)
                         Input.getProducers(), energyNeededKW);
-//        futureProducers = strategy.doOperation((ArrayList<Producer>) Input.getProducers(),
-//                energyNeededKW);
-
-
-
-
-
-
 
 
 

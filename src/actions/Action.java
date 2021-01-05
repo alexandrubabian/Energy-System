@@ -1,7 +1,6 @@
 package actions;
 
 import constants.Constants;
-import constants.Utils;
 import contracts.ConsumerContract;
 import contracts.ContractFactory;
 import contracts.Debt;
@@ -10,10 +9,15 @@ import fileio.Consumer;
 import fileio.DistributorChange;
 import fileio.Distributor;
 import fileio.Input;
+import fileio.MonthlyStats;
 import fileio.Producer;
 import fileio.ProducerChange;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public final class Action {
     private Input input;
@@ -22,9 +26,6 @@ public final class Action {
         this.input = input;
     }
 
-    public Input getInput() {
-        return input;
-    }
     /**
      * Introduce the new consumers
      *
@@ -43,24 +44,32 @@ public final class Action {
         Distributor distributor;
         for (DistributorChange iterator : input.getMonthlyUpdates().get(month).getDistributorChanges()) {
             distributor = input.getDistributors().get(iterator.getId());
-            //TODO check if it is working good
-            //distributor = Utils.findDistributor(iterator.getId(), input.getDistributors());
             if(distributor != null) {
                 distributor.setInfrastructureCost(iterator.getInfrastructureCost());
             }
         }
     }
 
-    public void introduceMonthProducerChanges(final int month) {
+    public ArrayList<Distributor> introduceMonthProducerChanges(final int month) {
         Producer producer;
+        Set<Distributor> set = new LinkedHashSet<>();
+        ArrayList<Distributor> distributors = new ArrayList<>();
         for (ProducerChange iterator : input.getMonthlyUpdates().get(month).getProducerChanges()) {
-            producer = input.getProducers().get(iterator.getId());
-            //TODO aici ar trb sa adaugi partea de observer
+            producer = Input.getProducers().get(iterator.getId());
             if(producer != null) {
-                producer.setEnergyPerDistributor(iterator.getEnergyPerDistributor());
+                producer.setEnergyPerDistributor(iterator.getEnergyPerDistributor(), distributors);
             }
         }
-
+        set.addAll(distributors);
+        distributors.clear();
+        distributors.addAll(set);
+        Collections.sort(distributors, new Comparator<Distributor>() {
+            @Override
+            public int compare(Distributor o1, Distributor o2) {
+                return o1.getId() - o2.getId();
+            }
+        });
+        return distributors;
     }
 
     /**
@@ -146,15 +155,24 @@ public final class Action {
         for (Consumer iterator : input.getConsumers()) {
             if (!iterator.getBankrupt()) {
                 distributor = iterator.getContract().getDistributor();
-                if (iterator.getBuget() >= iterator.getContract().getPrice()) {
-                    //no debt and he can also pay it
-                    if (iterator.getDebt() == null) {
+                //if he has no debt
+                if (iterator.getDebt() == null) {
+                    if (iterator.getBuget() >= iterator.getContract().getPrice()) {
                         iterator.pay(iterator.getContract().getPrice());
                         distributor.setBuget(
                                 iterator.getContract().getPrice() + distributor.getBuget());
-
                     } else {
-                        //if he has debt and he can pay the debt and the actual price
+                        //he has no debt but he can't pay the actual contract
+                        iterator.setDebt(new Debt((int) (Constants.PROCENTAGEDEBT
+                                * iterator.getContract().getPrice()), distributor));
+                        distributor.getInDebt().add(iterator);
+                    }
+                } else {
+                    //he has debt
+
+                    //same debt distributor as the actual distributor
+                    if (distributor.equals(iterator.getDebt().getDistributorToPay())) {
+                        //if he can pay the debt and the price
                         if (iterator.getBuget() >= (iterator.getContract().getPrice()
                                 + iterator.getDebt().getMoneyToPay())) {
 
@@ -165,38 +183,48 @@ public final class Action {
                                     + distributor.getBuget());
                             iterator.getDebt().getDistributorToPay().setBuget(
                                     iterator.getDebt().getMoneyToPay()
-                                            + iterator.getDebt().getDistributorToPay().getBuget());
+                                            + iterator.getDebt().getDistributorToPay()
+                                            .getBuget());
                             //no more in debt
-                            iterator.getDebt().getDistributorToPay().getInDebt().remove(iterator);
+                            iterator.getDebt().getDistributorToPay().getInDebt()
+                                    .remove(iterator);
                             iterator.setDebt(null);
-
                         } else {
-                            //he can't pay the second bill also
                             iterator.setBankrupt(true);
                             iterator.getContract().getDistributor().getContracts()
                                     .removeIf(x -> x.getConsumer().equals(iterator));
                             iterator.getDebt().getDistributorToPay().getInDebt().remove(iterator);
                         }
-                    }
-
-                } else {
-                    //The consumer can't pay the bill
-                    //case1: no debt
-                    if (iterator.getDebt() == null) {
-                        iterator.setDebt(new Debt((int) (Constants.PROCENTAGEDEBT
-                                * iterator.getContract().getPrice()), distributor));
-                        distributor.getInDebt().add(iterator);
                     } else {
-                        //case2: he already has a bill to pay
-                        iterator.setBankrupt(true);
-                        iterator.getContract().getDistributor().getContracts()
-                                .removeIf(x -> x.getConsumer().equals(iterator));
-                        iterator.getDebt().getDistributorToPay().getInDebt().remove(iterator);
+                        //if the distributor where he has debt is not the same as the actual one
+
+                        //if he can pay the debt to the other distributor
+                        if (iterator.getBuget() >= (iterator.getDebt().getMoneyToPay())) {
+                            iterator.pay(iterator.getDebt().getMoneyToPay());
+                            iterator.getDebt().getDistributorToPay().setBuget(
+                                    iterator.getDebt().getMoneyToPay()
+                                            + iterator.getDebt().getDistributorToPay()
+                                            .getBuget());
+
+                            //no more in debt
+                            iterator.getDebt().getDistributorToPay().getInDebt()
+                                    .remove(iterator);
+                            iterator.setDebt(new Debt((int) (Constants.PROCENTAGEDEBT
+                                    * iterator.getContract().getPrice()), distributor));
+                        } else {
+                            //he can't pay his debt to the other distributor
+                            iterator.setBankrupt(true);
+                            iterator.getContract().getDistributor().getContracts()
+                                    .removeIf(x -> x.getConsumer().equals(iterator));
+                            iterator.getDebt().getDistributorToPay().getInDebt()
+                                    .remove(iterator);
+                        }
                     }
                 }
             }
         }
     }
+
     /**
      * Find the distributor with the budget <0 and it makes it bankrupt
      */
@@ -253,13 +281,37 @@ public final class Action {
     }
 
     public void chooseFirstProducers() {
+        ArrayList<Producer> futureProducers;
         for (Distributor iterator : input.getDistributors()) {
-            ArrayList<Producer> futureProducers = iterator.getStrategy().doOperation((
-                    ArrayList<Producer>) Input.getProducers(), iterator.getEnergyNeededKW());
+            futureProducers =  new ArrayList<>(iterator.getStrategy().doOperation((
+                    ArrayList<Producer>) Input.getProducers(), iterator.getEnergyNeededKW()));
 
             for(Producer producer : futureProducers) {
                 iterator.addSubject(producer);
             }
+        }
+    }
+
+    public void setMonthlyStats(int month) {
+        ArrayList<Integer> distributorIds;
+        for(Producer iterator : Input.getProducers()) {
+            distributorIds = new ArrayList<>();
+            Collections.sort(iterator.getObservers(), new Comparator<Distributor>() {
+                @Override
+                public int compare(Distributor o1, Distributor o2) {
+                    return o1.getId() - o2.getId();
+                }
+            });
+            for(Distributor distributor : iterator.getObservers()) {
+                distributorIds.add(distributor.getId());
+            }
+            iterator.getMonthlyStats().add(new MonthlyStats(month+1,distributorIds));
+        }
+    }
+
+    public void changeDistributors(ArrayList<Distributor> distributors) {
+        for (Distributor iterator : distributors) {
+            iterator.update();
         }
     }
 }

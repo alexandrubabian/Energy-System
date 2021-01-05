@@ -46,6 +46,10 @@ public final class ToWriteDistributor {
         return budget;
     }
 
+    public String getProducerStrategy() {
+        return producerStrategy;
+    }
+
     public Boolean getIsBankrupt() {
         return isBankrupt;
     }
