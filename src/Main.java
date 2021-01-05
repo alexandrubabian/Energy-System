@@ -4,6 +4,8 @@ import fileio.Input;
 import fileio.InputLoader;
 import write.Writer;
 
+import java.util.ArrayList;
+
 /**
  * Entry point to the simulation
  */
@@ -20,7 +22,10 @@ public final class Main {
     public static void main(final String[] args) throws Exception {
         String inputFile = args[0];
         String outputFile = args[1];
+        //String inputFile = "/home/andu/Desktop/temaPOO/checker/resources/in/complex_4.json";
+        //String outputFile = "/home/andu/Desktop/temaPOO/fisier.out";
         InputLoader inputLoader = new InputLoader(inputFile);
+        ArrayList<Distributor> distributorsToChange;
         Input input = inputLoader.readData();
         Action action = new Action(input);
         //initialdata
@@ -42,7 +47,9 @@ public final class Main {
             action.distributorPay();
             action.pay();
             action.distributorBankrupt();
-            action.introduceMonthProducerChanges(i);
+            distributorsToChange = action.introduceMonthProducerChanges(i);
+            action.changeDistributors(distributorsToChange);
+            action.setMonthlyStats(i);
         }
         action.decreaseConstractMonths();
         Writer writer = new Writer(outputFile);

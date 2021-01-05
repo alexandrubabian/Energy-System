@@ -21,7 +21,7 @@ public class PriceStrategy implements Strategy{
         }.thenComparing(new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                return o1.getEnergyPerDistributor() - o2.getEnergyPerDistributor();
+                return o2.getEnergyPerDistributor() - o1.getEnergyPerDistributor();
             }
         }).thenComparing(new Comparator<Producer>() {
             @Override
@@ -34,7 +34,7 @@ public class PriceStrategy implements Strategy{
         while (energySummed < energyNeededKW) {
             if(toSort.get(iterator).getObservers().size() < toSort.get(iterator).getMaxDistributors()) {
                 toReturn.add(toSort.get(iterator));
-                energySummed += toReturn.get(iterator).getEnergyPerDistributor();
+                energySummed += toSort.get(iterator).getEnergyPerDistributor();
             }
             iterator++;
         }

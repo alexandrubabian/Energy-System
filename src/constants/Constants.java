@@ -18,7 +18,7 @@ public final class Constants {
     public static final String INITIALPRODUCTIONCOST = "initialProductionCost";
     public static final String MONTHLYUPDATES = "monthlyUpdates";
     public static final String NEWCONSUMERS = "newConsumers";
-    public static final String DISTRIBUTORCHANGES = "costsChanges";
+    public static final String DISTRIBUTORCHANGES = "distributorChanges";
     public static final String INFRASTRUCTURECOST = "infrastructureCost";
     public static final String PRODUCTIONCOST = "productionCost";
     public static final double PROCENTAGEPROFIT = 0.2;

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class MonthlyStats {
     private int month;
-    private ArrayList<Integer> distributorIds;
+    private ArrayList<Integer> distributorsIds;
 
-    public MonthlyStats(int month, ArrayList<Integer> distributorIds) {
+    public MonthlyStats(int month, ArrayList<Integer> distributorsIds) {
         this.month = month;
-        this.distributorIds = distributorIds;
+        this.distributorsIds = distributorsIds;
     }
 
     public int getMonth() {
@@ -19,11 +19,11 @@ public class MonthlyStats {
         this.month = month;
     }
 
-    public ArrayList<Integer> getDistributorIds() {
-        return distributorIds;
+    public ArrayList<Integer> getDistributorsIds() {
+        return distributorsIds;
     }
 
-    public void setDistributorIds(ArrayList<Integer> distributorIds) {
-        this.distributorIds = distributorIds;
+    public void setDistributorsIds(ArrayList<Integer> distributorsIds) {
+        this.distributorsIds = distributorsIds;
     }
 }

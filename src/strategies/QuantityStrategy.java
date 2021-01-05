@@ -16,7 +16,7 @@ public class QuantityStrategy implements Strategy{
         Collections.sort(toSort, new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                return o1.getEnergyPerDistributor() - o2.getEnergyPerDistributor();
+                return o2.getEnergyPerDistributor() - o1.getEnergyPerDistributor();
             }
         }.thenComparing(new Comparator<Producer>() {
             @Override
@@ -27,9 +27,10 @@ public class QuantityStrategy implements Strategy{
 
         int iterator = 0;
         while (energySummed < energyNeededKW) {
+            //System.out.println(toSort.get(iterator).getObservers().size());
             if(toSort.get(iterator).getObservers().size() < toSort.get(iterator).getMaxDistributors()) {
                 toReturn.add(toSort.get(iterator));
-                energySummed += toReturn.get(iterator).getEnergyPerDistributor();
+                energySummed += toSort.get(iterator).getEnergyPerDistributor();
             }
             iterator++;
         }
