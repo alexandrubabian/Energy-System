@@ -50,6 +50,13 @@ public final class Action {
         }
     }
 
+    /**
+     * For each month, if there is any changes at the producers, this method will use Observer DP
+     * and prepare the changes that will come for the distributors. There distributors are returned
+     * in a list by the function
+     * @param month when the operations are being procesed
+     * @return the list of distributors that have to find new producers
+     */
     public ArrayList<Distributor> introduceMonthProducerChanges(final int month) {
         Producer producer;
         Set<Distributor> set = new LinkedHashSet<>();
@@ -75,7 +82,7 @@ public final class Action {
     /**
      * Sets the price in each month for every distributor and return the distributor with best
      * price in that month
-     *
+     * Also set the monthly contract price
      * @return distributor with best price
      */
     public Distributor determineBestDistributor() {
@@ -84,7 +91,7 @@ public final class Action {
         Distributor bestDistributor = null;
         for (Distributor iterator : input.getDistributors()) {
             if (!iterator.getBankrupt()) {
-                iterator.setProductionCost();
+                iterator.setProductionAndProfit();
                 if (iterator.getContracts().size() == 0) {
                     price = iterator.getInfrastructureCost() + iterator.getProductionCost()
                             + iterator.getProfit();
@@ -240,13 +247,13 @@ public final class Action {
             }
         }
     }
+
     /**
      * For the distributor from the parameter, the function will delete all hist cotracts
      *
      * @param distributor to be deleted contracts
      */
     public void deleteContracts(final Distributor distributor) {
-
         for (Consumer iterator : distributor.getInDebt()) {
             iterator.setDebt(null);
         }
@@ -280,6 +287,10 @@ public final class Action {
         }
     }
 
+    /**
+     * The method for the initial round, when all the distributors have to find their first
+     * producers depending on their strategy
+     */
     public void chooseFirstProducers() {
         ArrayList<Producer> futureProducers;
         for (Distributor iterator : input.getDistributors()) {
@@ -291,8 +302,11 @@ public final class Action {
             }
         }
     }
-
-    public void setMonthlyStats(int month) {
+    /**
+     * Instantiate the field for a specific month after all the operation are being processed
+     * @param month when it need to be added the stats of the producers
+     */
+    public void setMonthlyStats(final int month) {
         ArrayList<Integer> distributorIds;
         for(Producer iterator : Input.getProducers()) {
             distributorIds = new ArrayList<>();
@@ -309,7 +323,11 @@ public final class Action {
         }
     }
 
-    public void changeDistributors(ArrayList<Distributor> distributors) {
+    /**
+     * Update the producers of the distributors that are given as a parameter
+     * @param distributors list of distributors that has to find others producers
+     */
+    public void changeDistributors(final ArrayList<Distributor> distributors) {
         for (Distributor iterator : distributors) {
             iterator.update();
         }

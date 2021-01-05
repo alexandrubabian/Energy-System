@@ -1,5 +1,6 @@
 package strategies;
 
+import constants.Utils;
 import fileio.Producer;
 
 import java.util.ArrayList;
@@ -8,10 +9,9 @@ import java.util.Comparator;
 
 public class GreenStrategy implements Strategy{
     @Override
-    public ArrayList<Producer> doOperation(ArrayList<Producer> producers, int energyNeededKW) {
-        ArrayList<Producer> toReturn = new ArrayList<>();
+    public ArrayList<Producer> doOperation(final ArrayList<Producer> producers,
+                                           final  int energyNeededKW) {
         ArrayList<Producer> toSort = new ArrayList<>(producers);
-        int energySummed = 0;
         Collections.sort(toSort, new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
@@ -45,14 +45,6 @@ public class GreenStrategy implements Strategy{
             }
         }));
 
-        int iterator = 0;
-        while (energySummed < energyNeededKW) {
-            if(toSort.get(iterator).getObservers().size() < toSort.get(iterator).getMaxDistributors()) {
-                toReturn.add(toSort.get(iterator));
-                energySummed += toSort.get(iterator).getEnergyPerDistributor();
-            }
-            iterator++;
-        }
-        return toReturn;
+        return Utils.toReturn(toSort, energyNeededKW);
     }
 }

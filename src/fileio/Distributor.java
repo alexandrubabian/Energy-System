@@ -127,11 +127,11 @@ public final class Distributor extends Common {
         this.infrastructureCost = infrastructureCost;
     }
     /**
-     * Change the production cost with the one from parameter
-     *
+     * Change the production cost with the one calculated
+     * Set the profit also
      *
      */
-    public void setProductionCost() {
+    public void setProductionAndProfit() {
         //this.productionCost = productionCost;
         Double cost = 0.0;
         for(Producer iterator : this.subjects) {
@@ -160,31 +160,27 @@ public final class Distributor extends Common {
         this.buget -= payment;
     }
 
-
-    //TODO here the parameter producer will be the producer from which it will come a part of energy
+    /**
+     * Do the connections
+     * @param producer to be added to the list subjects and to also add the distributor himself,
+     *                 to the producers observers list
+     */
     public void addSubject(Producer producer) {
         this.subjects.add(producer);
         producer.attach(this);
     }
-
+    /**
+     * This method is for a distributor, first, it removes himself from all the observers List
+     * of any producer that contain it. Then, in futureProducers, there will be all the new
+     * producers resulted from the specific strategy of the distributor and it creates the links
+     * via parameter subjects, between the distributor and his nnew producers
+     */
     public void update() {
-
         for(Producer iterator : this.getSubjects()) {
             iterator.getObservers().remove(this);
         }
         ArrayList<Producer> futureProducers = strategy.doOperation((ArrayList<Producer>)
                         Input.getProducers(), energyNeededKW);
-
-
-
-
-
-        //TODO trebuie sters si de la fiecare producator care era continut
-        for (Producer iterator : subjects) {
-            if(iterator.getObservers().contains(this)) {
-                iterator.getObservers().remove(this);
-            }
-        }
 
         this.subjects = new ArrayList<>();
         for(Producer iterator : futureProducers) {

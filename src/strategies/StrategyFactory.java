@@ -14,8 +14,7 @@ public final class StrategyFactory {
         return instance;
     }
 
-    public Strategy getStrategy(EnergyChoiceStrategyType energyChoiceStrategyType) {
-        //to extend in part 2 of the homework when there will be 2 types of consumers;
+    public Strategy getStrategy(final EnergyChoiceStrategyType energyChoiceStrategyType) {
         if (energyChoiceStrategyType.equals(EnergyChoiceStrategyType.GREEN)) {
             return new GreenStrategy();
         } else if (energyChoiceStrategyType.equals(EnergyChoiceStrategyType.PRICE)) {
