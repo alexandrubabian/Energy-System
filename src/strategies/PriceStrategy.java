@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PriceStrategy implements Strategy{
+public final class PriceStrategy implements Strategy {
 
     @Override
     public ArrayList<Producer> doOperation(final ArrayList<Producer> producers,

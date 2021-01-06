@@ -67,8 +67,8 @@ public final class InputLoader {
                     for (Object jsonIteratorDistributorChanges : jsonDistributorChanges) {
                         distributorChanges.add(new DistributorChange(
                                 Integer.parseInt(
-                                        ((JSONObject) jsonIteratorDistributorChanges).get(Constants.ID)
-                                                .toString()),
+                                        ((JSONObject) jsonIteratorDistributorChanges)
+                                                .get(Constants.ID).toString()),
                                 Integer.parseInt(((JSONObject) jsonIteratorDistributorChanges)
                                         .get(Constants.INFRASTRUCTURECOST).toString())
                         ));
@@ -125,14 +125,14 @@ public final class InputLoader {
                                     .get(Constants.INITIALINFRACTURECOST).toString()),
                             Integer.parseInt(((JSONObject) jsonDistributor)
                                     .get(Constants.ENERGYNEEDEDKW).toString()),
-                            (String )((JSONObject) jsonDistributor).get(Constants.PRODUCERSTRATEGY),
-                            null, 0 , 0.0,
+                            (String) ((JSONObject) jsonDistributor).get(Constants.PRODUCERSTRATEGY),
+                            null, 0, 0.0,
                             0
                     ));
                 }
             }
 
-            if(jsonProducers != null) {
+            if (jsonProducers != null) {
                 for (Object jsonProducer : jsonProducers) {
                     producers.add((Producer) CommonFactory.getInstance().getCommon(
                             "producer",
@@ -153,7 +153,7 @@ public final class InputLoader {
                 }
             }
 
-            if(jsonProducers == null) {
+            if (jsonProducers == null) {
                 producers = null;
             }
 

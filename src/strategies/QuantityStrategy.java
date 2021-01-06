@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class QuantityStrategy implements Strategy{
+public final class QuantityStrategy implements Strategy {
     @Override
     public ArrayList<Producer> doOperation(final ArrayList<Producer> producers,
                                            final int energyNeededKW) {

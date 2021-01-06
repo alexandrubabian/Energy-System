@@ -5,7 +5,7 @@ import entities.EnergyType;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Producer extends Common{
+public final class Producer extends Common {
 
     private EnergyType energyType;
     private int maxDistributors;
@@ -63,12 +63,12 @@ public final class Producer extends Common{
 
     /**
      * The observer method
-     * @param energyPerDistributor of the producer
+     * @param energyDistributor of the producer
      * @param distributors list of distributors that has to find others producers
      */
-    public void setEnergyPerDistributor(final int energyPerDistributor,
+    public void setEnergyPerDistributor(final int energyDistributor,
                                         final ArrayList<Distributor> distributors) {
-        this.energyPerDistributor = energyPerDistributor;
+        this.energyPerDistributor = energyDistributor;
         notifyAllObservers(distributors);
     }
 

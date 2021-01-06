@@ -119,6 +119,9 @@ public final class Distributor extends Common {
         return subjects;
     }
 
+    /**
+     * Profit calculated by the formula from the statement
+     */
     public void setProfit() {
         this.profit = (int) Math.round(Math.floor(Constants.PROCENTAGEPROFIT * productionCost));
     }
@@ -129,16 +132,14 @@ public final class Distributor extends Common {
     /**
      * Change the production cost with the one calculated
      * Set the profit also
-     *
      */
     public void setProductionAndProfit() {
-        //this.productionCost = productionCost;
         Double cost = 0.0;
-        for(Producer iterator : this.subjects) {
+        for (Producer iterator : this.subjects) {
             //TODO verifica daca trebuie Math.floor
             cost += (iterator.getEnergyPerDistributor() * iterator.getPriceKW());
         }
-        this.productionCost = (int) Math.round(Math.floor(cost / 10));
+        this.productionCost = (int) Math.round(Math.floor(cost / Constants.ROUNDED));
         this.setProfit();
     }
 
@@ -176,14 +177,14 @@ public final class Distributor extends Common {
      * via parameter subjects, between the distributor and his nnew producers
      */
     public void update() {
-        for(Producer iterator : this.getSubjects()) {
+        for (Producer iterator : this.getSubjects()) {
             iterator.getObservers().remove(this);
         }
         ArrayList<Producer> futureProducers = strategy.doOperation((ArrayList<Producer>)
                         Input.getProducers(), energyNeededKW);
 
         this.subjects = new ArrayList<>();
-        for(Producer iterator : futureProducers) {
+        for (Producer iterator : futureProducers) {
             this.addSubject(iterator);
         }
     }

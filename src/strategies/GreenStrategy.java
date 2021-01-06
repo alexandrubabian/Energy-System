@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class GreenStrategy implements Strategy{
+public final class GreenStrategy implements Strategy {
     @Override
     public ArrayList<Producer> doOperation(final ArrayList<Producer> producers,
                                            final  int energyNeededKW) {
@@ -15,13 +15,13 @@ public class GreenStrategy implements Strategy{
         Collections.sort(toSort, new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                if(o1.getEnergyType().isRenewable() && o2.getEnergyType().isRenewable()){
+                if (o1.getEnergyType().isRenewable() && o2.getEnergyType().isRenewable()) {
                  return 0;
                 }
-                if(!o1.getEnergyType().isRenewable() && !o2.getEnergyType().isRenewable()) {
+                if (!o1.getEnergyType().isRenewable() && !o2.getEnergyType().isRenewable()) {
                     return 0;
                 }
-                if(o1.getEnergyType().isRenewable() && !o2.getEnergyType().isRenewable()) {
+                if (o1.getEnergyType().isRenewable() && !o2.getEnergyType().isRenewable()) {
                     return -1;
                 } else {
                     return 1;

@@ -42,9 +42,10 @@ public final class Action {
      */
     public void introduceMonthDistributorChanges(final int month) {
         Distributor distributor;
-        for (DistributorChange iterator : input.getMonthlyUpdates().get(month).getDistributorChanges()) {
+        for (DistributorChange iterator : input.getMonthlyUpdates().get(month).
+                getDistributorChanges()) {
             distributor = input.getDistributors().get(iterator.getId());
-            if(distributor != null) {
+            if (distributor != null) {
                 distributor.setInfrastructureCost(iterator.getInfrastructureCost());
             }
         }
@@ -63,7 +64,7 @@ public final class Action {
         ArrayList<Distributor> distributors = new ArrayList<>();
         for (ProducerChange iterator : input.getMonthlyUpdates().get(month).getProducerChanges()) {
             producer = Input.getProducers().get(iterator.getId());
-            if(producer != null) {
+            if (producer != null) {
                 producer.setEnergyPerDistributor(iterator.getEnergyPerDistributor(), distributors);
             }
         }
@@ -297,7 +298,7 @@ public final class Action {
             futureProducers =  new ArrayList<>(iterator.getStrategy().doOperation((
                     ArrayList<Producer>) Input.getProducers(), iterator.getEnergyNeededKW()));
 
-            for(Producer producer : futureProducers) {
+            for (Producer producer : futureProducers) {
                 iterator.addSubject(producer);
             }
         }
@@ -308,7 +309,7 @@ public final class Action {
      */
     public void setMonthlyStats(final int month) {
         ArrayList<Integer> distributorIds;
-        for(Producer iterator : Input.getProducers()) {
+        for (Producer iterator : Input.getProducers()) {
             distributorIds = new ArrayList<>();
             Collections.sort(iterator.getObservers(), new Comparator<Distributor>() {
                 @Override
@@ -316,10 +317,10 @@ public final class Action {
                     return o1.getId() - o2.getId();
                 }
             });
-            for(Distributor distributor : iterator.getObservers()) {
+            for (Distributor distributor : iterator.getObservers()) {
                 distributorIds.add(distributor.getId());
             }
-            iterator.getMonthlyStats().add(new MonthlyStats(month+1,distributorIds));
+            iterator.getMonthlyStats().add(new MonthlyStats(month + 1, distributorIds));
         }
     }
 
