@@ -28,7 +28,6 @@ public final class Action {
 
     /**
      * Introduce the new consumers
-     *
      * @param month of the changes
      */
     public void introduceNewMonthCustomers(final int month) {

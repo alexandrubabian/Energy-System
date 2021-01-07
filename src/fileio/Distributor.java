@@ -136,7 +136,6 @@ public final class Distributor extends Common {
     public void setProductionAndProfit() {
         Double cost = 0.0;
         for (Producer iterator : this.subjects) {
-            //TODO verifica daca trebuie Math.floor
             cost += (iterator.getEnergyPerDistributor() * iterator.getPriceKW());
         }
         this.productionCost = (int) Math.round(Math.floor(cost / Constants.ROUNDED));

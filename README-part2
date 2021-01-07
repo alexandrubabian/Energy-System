@@ -1,0 +1,139 @@
+#Babian Stelian-Alexandru - 322CD
+#alexandru.babian00@gmail.com
+#Time spent to code: 12 hours
+#Time spent to think ~ 5 hours
+# Project Energy System Etapa 2
+
+## About
+
+
+<https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/proiect/etapa2>
+
+## Run Tests
+
+Class Test#main
+  * run the solution of all the tests from checker/, comparing the result with the one from checker/resources/ref
+  * run the checkesyle
+
+Details about the tests(in romanian) : checker/resources/README
+
+Biblioteci necesare pentru implementare:
+* Jackson Core 
+* Jackson Databind 
+* Jackson Annotations
+* ORG JSON SIMPLE
+
+
+## Implementation
+
+### Entities
+
+-Action
+	+Class with all the methods destinated for the flow of the program
+-Constants
+	+Class with defined constant variables
+-Utils
+	+Static functions
+-ConsumerContract
+	+Inherited from Contract
+	+Class to be stored in Consumer 
+-DistribContract
+	+Inherited from Contract
+	+Class to be stored in Distributor
+-Contract
+	+Abstract class
+-Debt
+	+to be stored in Consumer to save if a consumer has debt
+-ContractFactory
+	+Design Pattern Factory and Singleton to create an object ConsumerContract
+	 or DistibContract
+-EnergyType
+	+Enum for energy type
+-Common
+	+Abstract Class
+-Consumer
+	+Inherited from Common
+-Distributor
+	+Inherited from Common
+-Producer
+	+Inherited from Common
+-CommonFactory
+	+Design Pattern Factory and Singleton to create an object Consumer,
+	Distributor or Producer
+-InputLoader
+	+Parse the input from JSON type to Input Class type
+-Input
+	+Class to be store the data
+-DistributorChange
+	+To be stored in class MonthlyUpdate
+-ProducerChange
+	+To be stored in class MonthlyUpdate
+-MonthlyStats
+	+To be stored in class Producer
+-EnergyChoiceStrategyType
+	+Enum for energy strategy type
+-GreenStrategy
+-PriceStrategy
+-QuantityStrategy
+-Strategy
+	+interface
+-StrategyFactory
+	+Design Pattern Factory and Singleton to create an object of interface Strategy
+-ToWrite
+	+Transform from Input Classes to classes to write in the JSON
+-ToWriteConsumer
+	+To be stored in ToWrite
+-ToWriteContracts
+	+To be stored in ToWrite
+-ToWriteDistributor
+	+To be stored in ToWrite
+-ToWriteProducer
+	+To be stored in ToWrite
+-Main
+-Test
+
+
+### Flow
+
+	The class that controls the flow of the program is Action.
+	The flow it is presented in Main class.
+	First, there is the initial round, where the single difference from a normal
+month is that there is missing the updates for consumers, distributors or producers.
+	Initial Round:
+	-each distributor finds a producer depending on their energy type
+Each month:
+	-determine the best distributor, by setting their profit and production cost
+	-consumers receive their salaries
+	-consumers choose a contract from the best distributor
+	-consumers pay their distributor
+	-distributors pay their monthly costs
+	-if there is any distributor with negative budget, it is considered bamkrupt
+	-set the new producer energy per distributor if there is any
+	-the distributors affected by the producer change, look after another producers
+
+### OOP design elements
+
+	I used the next abstract classes : Common(to separate the classes
+Consumer, Distributor and Producers, the main subjects of the program),
+Contract(to create 2 types of Contracts: ConsumerContract and DistribContract).
+The main utily of abstractisation was to use the Factory DP.
+	Every field of the classes is private to encapsulate them. 
+
+
+### Design patterns
+
+	There are 4 DP: Factory compound with Singleton, Observer and Strategy.
+	As I mentioned above, I used Factory and Singleton to generate objects
+of type Common, Strategy and Contract.
+	Every time a new change for the producers was occurred, the Observer DP
+notifies their distributors to look for new producers
+	Strategy DP was used for the selection of the producers for each distributor,
+depending on their energy strategy type.
+
+### Comments
+
+	Not the greatest homework because of the main scope: to do it in 2
+parts, in the second one to know our feedback from the first and to learn from
+mistakes. But, I really apreciate the idea of it, to simulate real world
+where we should create a code open for extension.
+
