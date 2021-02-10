@@ -2,11 +2,11 @@ package fileio;
 
 import java.util.ArrayList;
 
-public class MonthlyStats {
+public final class MonthlyStats {
     private int month;
     private ArrayList<Integer> distributorsIds;
 
-    public MonthlyStats(int month, ArrayList<Integer> distributorsIds) {
+    public MonthlyStats(final int month, final ArrayList<Integer> distributorsIds) {
         this.month = month;
         this.distributorsIds = distributorsIds;
     }
@@ -23,7 +23,7 @@ public class MonthlyStats {
         return distributorsIds;
     }
 
-    public void setDistributorsIds(ArrayList<Integer> distributorsIds) {
+    public void setDistributorsIds(final ArrayList<Integer> distributorsIds) {
         this.distributorsIds = distributorsIds;
     }
 }

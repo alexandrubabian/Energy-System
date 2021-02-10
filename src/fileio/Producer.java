@@ -1,15 +1,11 @@
 package fileio;
 
 import entities.EnergyType;
-import strategies.Strategy;
-import strategies.StrategyFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class Producer extends Common{
+public final class Producer extends Common {
 
     private EnergyType energyType;
     private int maxDistributors;
@@ -32,7 +28,7 @@ public class Producer extends Common{
         return energyType;
     }
 
-    public void setEnergyType(EnergyType energyType) {
+    public void setEnergyType(final EnergyType energyType) {
         this.energyType = energyType;
     }
 
@@ -40,7 +36,7 @@ public class Producer extends Common{
         return maxDistributors;
     }
 
-    public void setMaxDistributors(int maxDistributors) {
+    public void setMaxDistributors(final int maxDistributors) {
         this.maxDistributors = maxDistributors;
     }
 
@@ -49,7 +45,7 @@ public class Producer extends Common{
         return priceKW;
     }
 
-    public void setPriceKW(Double priceKW) {
+    public void setPriceKW(final Double priceKW) {
         this.priceKW = priceKW;
     }
 
@@ -67,37 +63,29 @@ public class Producer extends Common{
 
     /**
      * The observer method
-     * @param energyPerDistributor of the producer
+     * @param energyDistributor of the producer
+     * @param distributors list of distributors that has to find others producers
      */
-    public void setEnergyPerDistributor(int energyPerDistributor, ArrayList<Distributor> distributors) {
-        this.energyPerDistributor = energyPerDistributor;
+    public void setEnergyPerDistributor(final int energyDistributor,
+                                        final ArrayList<Distributor> distributors) {
+        this.energyPerDistributor = energyDistributor;
         notifyAllObservers(distributors);
-        //TODO delete all the distributors addicted to this producer
     }
 
-    private void notifyAllObservers(ArrayList<Distributor> distributors) {
-//        ArrayList<Distributor> copyOfObservers = new ArrayList<>(observers);
-////        for(Distributor iterator : copyOfObservers) {
-////            iterator.getSubjects().remove(this);
-////        }
-//        this.observers = new ArrayList<>();
+    /**
+     * For each change of a producer, it has to be created the list with all the distributors
+     * affected
+     * @param distributors list of distributors that has to find others producers
+     */
+    private void notifyAllObservers(final ArrayList<Distributor> distributors) {
         distributors.addAll(this.getObservers());
-//        Collections.sort(copyOfObservers, new Comparator<Distributor>() {
-//            @Override
-//            public int compare(Distributor o1, Distributor o2) {
-//                return o1.getId() - o2.getId();
-//            }
-//        });
-//        for (Distributor iterator : copyOfObservers) {
-//
-//            //TODO check if true
-//            if(!iterator.getBankrupt()) {
-//                iterator.update();
-//            }
-//        }
     }
 
-    public void attach(Distributor distributor) {
+    /**
+     * Attach a distributor to the list of observers of a producer
+     * @param distributor who has to be added
+     */
+    public void attach(final Distributor distributor) {
         observers.add(distributor);
     }
 }

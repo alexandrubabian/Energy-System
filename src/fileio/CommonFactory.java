@@ -42,7 +42,7 @@ public final class CommonFactory {
         } else if (commonType.equals("distributor")) {
             return new Distributor(id, contractLength, buget, infrastructureCost, energyNeededKW,
                     producerStrategy);
-        } else if(commonType.equals("producer")) {
+        } else if (commonType.equals("producer")) {
             return new Producer(id, energyType, maxDistributors, priceKW, energyPerDistributor);
         }
         return null;

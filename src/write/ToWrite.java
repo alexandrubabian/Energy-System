@@ -58,7 +58,7 @@ public final class ToWrite {
             }
         }
 
-        for(Producer iterator : Input.getProducers()) {
+        for (Producer iterator : Input.getProducers()) {
             energyProducers.add(new ToWriteProducer(iterator.getId(), iterator.getMaxDistributors(),
                     iterator.getPriceKW(), iterator.getEnergyType().getLabel(),
                     iterator.getEnergyPerDistributor(), iterator.getMonthlyStats()));

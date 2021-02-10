@@ -1,38 +1,33 @@
 package constants;
 
-import fileio.Distributor;
 import fileio.Producer;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public final class Utils {
+
     private Utils() {
+
     }
 
     /**
-     * Find the distributor with the id from paramter
-     *
-     * @param id of distributor to look for
-     * @param distributors list of distributors
-     * @return the distributor
+     * Method use to determine for each strategy of a distributor, what producers he will choose
+     * @param sorted - list of all producers sorted depending on the strategy
+     * @param energyNeededKW how much energy the specific distributor needs
      */
-    public static Distributor findDistributor(final int id,
-                                              final List<Distributor> distributors) {
-        for (Distributor iterator : distributors) {
-            if (iterator.getId() == id) {
-                return iterator;
+    public static ArrayList<Producer> toReturn(final ArrayList<Producer> sorted,
+                                               final int energyNeededKW) {
+        ArrayList<Producer> toReturn = new ArrayList<>();
+        int iterator = 0;
+        int energySummed = 0;
+        while (energySummed < energyNeededKW) {
+            if (sorted.get(iterator).getObservers().size() < sorted.get(iterator).
+                    getMaxDistributors()) {
+                toReturn.add(sorted.get(iterator));
+                energySummed += sorted.get(iterator).getEnergyPerDistributor();
             }
+            iterator++;
         }
-        return null;
-    }
-
-    public static Producer findProducer(final int id,
-                                           final List<Producer> producers) {
-        for (Producer iterator : producers) {
-            if (iterator.getId() == id) {
-                return iterator;
-            }
-        }
-        return null;
+        return toReturn;
     }
 }

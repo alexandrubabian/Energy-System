@@ -4,7 +4,7 @@ import fileio.MonthlyStats;
 
 import java.util.List;
 
-public class ToWriteProducer {
+public final class ToWriteProducer {
 
     private final int id;
 
@@ -18,8 +18,9 @@ public class ToWriteProducer {
 
     private final List<MonthlyStats> monthlyStats;
 
-    public ToWriteProducer(int id, int maxDistributors, Double priceKW, String energyType,
-                           int energyPerDistributor, List<MonthlyStats> monthlyStats) {
+    public ToWriteProducer(final int id, final int maxDistributors, final Double priceKW,
+                           final String energyType, final int energyPerDistributor,
+                           final List<MonthlyStats> monthlyStats) {
         this.id = id;
         this.maxDistributors = maxDistributors;
         this.priceKW = priceKW;

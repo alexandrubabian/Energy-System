@@ -30,5 +30,6 @@ public final class Constants {
     public static final String PRICEKW = "priceKW";
     public static final String ENERGYPERDISTRIBUTOR = "energyPerDistributor";
     public static final String PRODUCERCHANGES = "producerChanges";
+    public static final int ROUNDED = 10;
 
 }
